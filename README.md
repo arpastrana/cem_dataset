@@ -23,16 +23,16 @@ We look forward to hearing how you use these topologies and forms in your next g
 
 3. Take a bridge example from the catalog stored as a `pdf` in under `bridges/bridge_catalog.pdf` in this repository and form-find it with `compas_cem` for grasshopper. Every example typology in the catalog is considered a unique bridge **family** with a unique name. We are interested in building parametric variations of **2d** and **3d** versions of the **topology diagram** of each family. Have a look at the next section for a more detailed explanation.
 
-### Deliverables: Data for a bridge family
+### Deliverables: Data for a bridge type
  
-To give you an example of what the folder structure of each bridge family should look like and what data files it should contain, have a look at the `zermattA` folder under `bridges/zermattA`. 
+To give you an example of what the folder structure of each bridge type should look like and what data files it should contain, have a look at the `zermattA` folder under `bridges/zermatt`. 
    
 Summarizing, this is what we are expecting for the folder structure:
    
    ```
-   bridges
+   bridge_type
+   |--|bridge_type.png
    |--family_name
-   |--|--family_name.png
    |--|--2d
    |--|--|--family_name_2d.ghx
    |--|--|--form_2d_1.pdf
@@ -53,15 +53,20 @@ Summarizing, this is what we are expecting for the folder structure:
    |--|--|--topology_3d_3.json
    ...
    |--|--|--topology_3d_N.json
+   ...
+   |--family_name_B
+   ...
    ```
 
 Let's break it down for us:
 
-First we choose a unique and descriptive name for the bridge family, `family_name`. The data for bridge family lives in a self-named folder. Inside we have `family_name.png` which is a screenshot of the bridge we are CEM-modeling looks like in the book. Next, we have two folders: one for a planar model of the bridge (`2d`) and the other for a three-dimensional model of the bridge  (`3d`). Their contents are exactly the same:
+First we choose a unique and descriptive name `bridge_typology` for the bridge typology we will work with, for example `zermatt`, `vierendeel_truss` or `suspension_bridge`. The bridge typology corresponds to a collection of bridge families.
+Then, we set a name `family_name` for the bridge we will be modeling. A bridge family identifies a particular topological way to model the bridge or case-specific boundary conditions. For example. `zermattA` and `vierendeel_truss_3supports`. There has to be at least one family per bridge typology.
+The data for bridge family lives in a self-named folder. Inside we have `family_name.png` which is a screenshot of the bridge we are CEM-modeling looks like in the book. Next, we have two folders: one for a planar model of the bridge (`2d`) and the other for a three-dimensional model of the bridge  (`3d`). Their contents are exactly the same:
 
 - An `xml` grasshopper file `family_name_2d/3d.ghx` with **internalized** inputs (so that it can be opened independently of a Rhino file).
-- One `json` file and one `pdf` diagram for the "proof of concept" form diagram (more information in the next section).
-- One `pdf` diagram for the "proof of concept" topology diagram (this is the topology diagram that was used to generated the "proof of concept" form diagram).
+- One `json` file and one `pdf` diagram for the "proof of concept" constrained form diagram (more information in the next section).
+- One `pdf` diagram for the "proof of concept" topology diagram (this is the topology diagram that was used to generated the "proof of concept" constrained form diagram).
 - N different `json` files that contain the parametric variations of the topology diagram.
 
 Note that each of `json` and `pdf` files should named following the schema convention stated below 👇🏽.
@@ -69,27 +74,32 @@ Note that each of `json` and `pdf` files should named following the schema conve
 
 #### Building parametric variations of a bridge family in grasshopper
 
-You might be thinking to all of the above, "okay, but how do I actually model the bridge family with `compas_cem` and grasshopper?". Well, my friend, this is pretty much up to our imagination! 
+You might be thinking to all of the above, "okay, but how do I actually model and parametrize the bridge family with `compas_cem` and grasshopper?". 
 
-However, there is the gist of a workflow that we should stick to speed up the modeling process. Moreover, the components to export `json` and `pdf` files has been automated and encapsulated into grasshopper clusters for us (check out `zermattA_2d.ghx` and copy paste parts 02 and parts 03 of this grasshopper script) --so that is one thing off our lists so that we can focus our attention in the main goal of this dataset-building task: to take a wireframe unlabeled model and construct valid topological diagrams that are compatible to do form-finding and constrained form-finding with the CEM framework. 
-
-Hopefull one day, a graph machine learning model will take care of the deviation-trail edge labeling task, but until then, we have to do it the good ol' way 🤠. 
+There is not only way to do this. However, there is the gist of a workflow that we should stick to speed up the modeling process. 
+Moreover, the components to export `json` and `pdf` files has been automated and encapsulated into grasshopper clusters for us (check out `zermattA_2d.ghx` and copy paste parts 02 and parts 03 of this grasshopper script) --so that is one thing off our lists so that we can focus our attention in the main goal of this dataset-building task: to take a wireframe unlabeled model and construct valid topological diagrams that are compatible to do form-finding and constrained form-finding with the CEM framework. 
 
 Here are our conventions to keep our approach consistent:
 
 - Rhino units are `meters`.
 - All the bridge family models should cover a span that is `10 meters` long (use the `context.3dm` as template). We care about the proportions of the structure, not about its dimensions (i.e. just scale the the models in Rhino so that they look as close as possible to the images in the book catalog. ).
 - We apply to the structure line loads of **1.0 kN/m**
-- 
-Here is one approach to the modeling workflow after you picked a bridge family:
-- Download the `context.3dm` folder from this repo. It contains helper geometry (including what looks like a river!) to give some context to our bridge design problem. It also has the right span we are using for all the bridge models (10 meters).
-- Sketch a wireframe version of the bridge on paper and think about what parts of the structural system will be in tension and which will be in compression.
-- Sketch a wireframe version of the bridge on Rhino. Bear in mind we need line segments to be fed into `compas_cem` (just as with any other FEM design tool, like Karamba). You can model stuff as polylines, but don't forget to explode them into individual line segments before passing them into `compas_cem`.
-- Check out `zermattA_2d.ghx` and copy paste parts 02 and parts 03 of this grasshopper script. This is boilerplate template code that takes care of visualizing topology and form diagrams, as well exporting the `pdf` and `json` files. 
-- Manually select and import what line segments in Rhino will become trail or deviation edges in `compas_cem`. It is helpful to further distinguish them according the force state we think the structural system will have. That is, trail edges in tension and in compression, and deviation edges in tension and in compression.
-- Try and err building a topology diagram. Visualize it with the visualization template code we copied earlier. Try to use as few auxiliary trails as possible. **At the end of the day, when the `compas_cem` components called `TopologyDiagram` and `Build Trails` are not red, we know that we have a valid and working topology diagram!**
-- Once you have a valid topology diagram, try form-finding it with the `FormFinding` component. Most likely, we will get some form out of it that does not look like what we originally  envisioned. But be patient. Try to tweak the input forces and lengths that parametrize deviation and trail edges, respectively, until the form output by `FormFinding` is somewhat close to what we imagined the form should be. This generates a form diagram.
-- Run a constrained form-finding routine with the `ConstrainedFormFinding` component to run the extra mile and automatically get the form we imagined. Don't forget to include the minimization of forces in the auxiliary trails. **Note that there will be times where the constrained form-finding will not converge because the underlying optimization problem is too big, over-constrained or under parametrized.** This process generates a constrained form diagram.
+
+Here is one way to approach the modeling workflow in either 2d or 3d for a bridge family:
+
+1. Download the `context.3dm` folder from this repo. It contains helper geometry (including what looks like a river!) to give some context to our bridge design problem. It also has the right span we are using for all the bridge models (10 meters).
+
+2. Build a proof-of-concept model (the simplest possible working version):
+	- Sketch a wireframe version of the simplest possible version of the bridge on paper and think about what parts of the structural system will be in tension and which will be in compression.
+	- Sketch a wireframe version of the proof-of-concept bridge on Rhino. This model should contain the least amount of edges possible to represent the bridge structural system. Bear in mind we need line segments to be fed into `compas_cem` (just as with any other FEM design tool, like Karamba). You can model stuff as polylines, but don't forget to explode them into individual line segments before passing them into `compas_cem`.
+	- Check out `zermattA_2d.ghx` and copy paste parts 02 and parts 03 of this grasshopper script. This is boilerplate template code that takes care of visualizing topology and form diagrams, as well exporting the `pdf` and `json` files. 
+	- Manually select and import what line segments in Rhino will become trail or deviation edges in `compas_cem`. It is helpful to further distinguish them according the force state we think the structural system will have. That is, trail edges in tension and in compression, and deviation edges in tension and in compression.
+	- Try and err building a topology diagram. Visualize it with the visualization template code we copied earlier. Try to use as few auxiliary trails as possible. **At the end of the day, when the `compas_cem` components called `TopologyDiagram` and `Build Trails` are not red, we know that we have a valid and working topology diagram!**
+	- Once you have a valid topology diagram, try form-finding it with the `FormFinding` component. Most likely, we will get some form out of it that does not look like what we originally  envisioned. But be patient. Try to tweak the input forces and lengths that parametrize deviation and trail edges, respectively, until the form output by `FormFinding` is somewhat close to what we imagined the form should be. This generates a form diagram.
+	- Run a constrained form-finding routine with the `ConstrainedFormFinding` component to run the extra mile and automatically get the form we imagined. Don't forget to include the minimization of forces in the auxiliary trails. **Note that there will be times where the constrained form-finding will not converge because the underlying optimization problem is too big, over-constrained or under parametrized.** This process generates a constrained form diagram.
+	- At this point we have valid topology and constrained form diagrams. We export `pdf` and `json` filed from them using the export template code we copied earlier from `zermattA_2d.ghx`. If you are working with a 3d model, don't forget to properly fix a camera plane that is input to the Make2d operation so that the exported `pdf` diagrams are neat, reproducible and consistent!
+
+3. Now that we have build and exported "proof-of-concept" topology and constrained form diagrams, we can start making parametric variations of the topology diagram of the bridge. **The parametric variations are just about changing the number of subdivision of the elements at the deck level of the bridge.** The convention is that we expect to linearly increase the number of subdivisions **from 2 or 3** (depends on the bridge being modeled; should also be the number of subdivisions in the "proof of concept" form and topology diagrams) **up to 20**. We export `json` and `pdf` files of each of the topology diagrams resulting from subdivision variations.
 
 #### Naming convention
 
