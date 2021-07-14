@@ -28,6 +28,7 @@ Go into the drive folder: Rhino file, grasshopper script
 
 Topology diagram
 	JSON files
+	2 and 3 supports
 	2d and 3d
 		proof-of-concept (most basic) - requires image
 		with deck variations (what is the range?) - requires images
@@ -45,29 +46,30 @@ Form diagram
 To identify our data, we set a consistent naming schema. The idea is that the name of any two diagrams is unique. Therefore, any file must be stored using the following filename:
 
 ```
-familyname_diagram_2dor3d_numnodes_numsupports_numloads_numedges_numtrailedges_numdeviationedges_numauxtrails_variant
+familyname_diagram_2dor3d_numnodes_numsupports_numloads_numedges_numtrailedges_numdeviationedges_numauxtrails
 ```
 		
 Here is a fictitious example:
 
 ```
-warrentruss_topology_3d_10_2_5_20_15_5_1_1.json
+warrentruss_T_3d_10_2_5_20_15_5_1.json
 ```
 
-Let's break the name down: this is the `JSON` file of the topology diagram of a 3D structure that belong to the `warrentruss` bridge family. The diagram contains 10 nodes of which 2 are supports and 5 have a load applied onto. Similarly, of a total of 20 edges, 15 are trail edges and 5 are a deviation edges. This topology diagram contains 1 auxiliary trail and is the first variant of how to model the structure topologically.
+Let's break the name down: this is the `JSON` file of the topology diagram of a 3D structure that belong to the `warrentruss` bridge family. The diagram contains 10 nodes of which 2 are supports and 5 have a load applied onto. Similarly, of a total of 20 edges, 15 are trail edges and 5 are a deviation edges. This topology diagram contains 1 auxiliary trail.
 
 The snapshot image of this topology diagram would have the exact same name, but the filename extension would be `.pdf` instead of `json`
+
+If this was a form diagram instead, the last three attributes would be dismissed because a form does not know the distinction between trail and deviation edges.
 
 #### Schema description
 
 - `familyname`: The (arbitrary) name we give to a unique bridge type.
-- `diagram`: What diagram are we looking at? Could be either `topology` or `form`.
+- `diagram`: What diagram are we looking at? Could be either `T` or `F` for a topology and a form diagram, respectively.
 - `numnodes`: How many nodes are in the diagram?
 - `numsupportnodes`: How many nodes have supports assigned to them?
 - `numloads`: How many nodes have a load applied onto them?
 - `numedges`: The number of edges in the diagram.
 - `numtrailedges`: The number of trail edges in the diagram.
 - `numdeviationedges`: The number of deviation edges in the diagram.
-- `numauxiliary`: The number of auxiliary trails in the diagram.
-- `variant`: Recall that a structure can be topologically modeled in more than one way within the CEM framework. Consequently, if there are multiple versions of the topological diagram of a structure (and their corresponding form diagram), by changing `variant` field is how we further distinguish among them (e.g. variant `1`, `2`, `3`, and so on).
+- `numauxtrails`: The number of auxiliary trails in the diagram.
 
