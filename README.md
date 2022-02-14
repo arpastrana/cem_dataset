@@ -135,6 +135,20 @@ If this was a form diagram instead, the last three attributes would be dismissed
 - `numdeviationedges`: The number of deviation edges in the diagram.
 - `numauxtrails`: The number of auxiliary trails in the diagram.
 
+## Citation
+
+If you use this dataset, please cite it:
+
+``` bibtex
+@software{compas_cem,
+    title={{COMPAS~CEM}: The {Combinatorial Equilibrium Modeling} framework for {COMPAS}},
+    author={Pastrana, Rafael and Skepasts, Mark and Parascho, Stefana},
+    year={2021},
+    url={https://github.com/arpastrana/cem_dataset },
+    note={https://github.com/arpastrana/cem_dataset }
+    }
+```
+
 ## Disclaimer
 
 This project has been partially funded by the Princeton Mellon Initiative for Architecture and Urbanism.
