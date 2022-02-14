@@ -140,12 +140,12 @@ If this was a form diagram instead, the last three attributes would be dismissed
 If you use this dataset, please cite it:
 
 ``` bibtex
-@software{compas_cem,
-    title={{COMPAS~CEM}: The {Combinatorial Equilibrium Modeling} framework for {COMPAS}},
+@software{bridgesdataset,
+    title={A dataset of bridge topologies, form and forces form based on the {CEM} {F}ramework},
     author={Pastrana, Rafael and Skepasts, Mark and Parascho, Stefana},
     year={2021},
-    url={https://github.com/arpastrana/cem_dataset },
-    note={https://github.com/arpastrana/cem_dataset }
+    url={https://github.com/arpastrana/cem_dataset},
+    note={https://github.com/arpastrana/cem_dataset}
     }
 ```
 
