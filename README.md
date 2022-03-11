@@ -141,7 +141,7 @@ If you use this dataset, please cite it:
 
 ``` bibtex
 @software{bridges_dataset,
-    title={{The CEM Framework Bridges}: A dataset of bridge topologies, form and forces},
+    title={{The CEM Framework Bridges Dataset}: A dataset of bridge topologies, forms and forces},
     author={Pastrana, Rafael and Skepasts, Mark and Parascho, Stefana},
     year={2021},
     url={https://github.com/arpastrana/cem_dataset},
