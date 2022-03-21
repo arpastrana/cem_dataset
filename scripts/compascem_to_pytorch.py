@@ -92,7 +92,7 @@ def topology_to_numpy_arrays(topology, include_aux_trails=True):
         X[node, :] = node_type_to_vector[node_type]
 
     # make edge index matrix
-    edge_index = np.array(list(topology.edges()), dtype=int)
+    edge_index = np.array(list(topology.edges()), dtype=int).T
 
     # build edge labels array
     y = np.empty(shape=n_edges, dtype=int)
@@ -100,10 +100,14 @@ def topology_to_numpy_arrays(topology, include_aux_trails=True):
         edge_type = topology.edge_attribute(edge, "type")
         y[i] = edge_type_to_label[edge_type]
 
+    # add reversed edges to make graph undirected
+    edge_index = np.column_stack((edge_index, np.flip(edge_index, axis=0)))
+    y = np.concatenate((y, y))
+
     # shallow tests
-    assert edge_index.shape[0] == y.size
-    assert topology.number_of_deviation_edges() == np.sum(y==edge_type_to_label["deviation"])
-    assert topology.number_of_trail_edges() == np.sum(y==edge_type_to_label["trail"])
+    assert edge_index.shape[1] == y.size
+    assert 2*topology.number_of_deviation_edges() == np.sum(y==edge_type_to_label["deviation"])
+    assert 2*topology.number_of_trail_edges() == np.sum(y==edge_type_to_label["trail"])
     assert topology.number_of_support_nodes() == np.sum(X[:, 0]==node_type_to_vector["support"][0])
 
     # return gracefully
